@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Select Language{% endblock %}
+{% block content %}
+<div class="text-center mb-5">
+    <h2 class="display-6">Welcome, {{ current_user.username }}!</h2>
+    <p class="lead text-body-secondary">First, select a language to browse.</p>
+</div>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for lang in languages %}
+    <div class="col">
+        <a href="{{ url_for('genres_by_language', language_name=lang.name) }}" class="text-decoration-none">
+            <div class="card bg-dark-subtle h-100 text-center border-secondary">
+                <div class="card-body d-flex flex-column justify-content-center p-4">
+                    <h3 class="card-title">{{ lang.name }} Cinema</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% else %}
+    <p class="text-center col-12 text-body-secondary">No languages found.</p>
+    {% endfor %}
+</div>
+{% endblock %}

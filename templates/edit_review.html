@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Edit Your Review{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2>Edit Your Review for <span class="text-info">{{ review.movie.title }}</span></h2>
+        <div class="card bg-dark-subtle border-secondary mt-4">
+            <div class="card-body">
+                <form action="{{ url_for('edit_review', review_id=review.id) }}" method="POST">
+                    <div class="mb-3">
+                        <label for="rating" class="form-label">Your Rating</label>
+                        <div class="rating">
+                            <input type="radio" id="star5" name="rating" value="5" {% if review.rating == 5 %}checked{% endif %} /><label for="star5">★</label>
+                            <input type="radio" id="star4" name="rating" value="4" {% if review.rating == 4 %}checked{% endif %} /><label for="star4">★</label>
+                            <input type="radio" id="star3" name="rating" value="3" {% if review.rating == 3 %}checked{% endif %} /><label for="star3">★</label>
+                            <input type="radio" id="star2" name="rating" value="2" {% if review.rating == 2 %}checked{% endif %} /><label for="star2">★</label>
+                            <input type="radio" id="star1" name="rating" value="1" {% if review.rating == 1 %}checked{% endif %} /><label for="star1">★</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="review_text" class="form-label">Your Review (Optional)</label>
+                        <textarea class="form-control" id="review_text" name="review_text" rows="4">{{ review.text or '' }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="{{ url_for('movie_detail', movie_id=review.movie_id) }}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

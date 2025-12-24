@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+{% block content %}
+<div class="p-5 mb-4 bg-dark-subtle rounded-3 text-center">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">Welcome to CineSuggest 🎬</h1>
+        <p class="fs-4">Discover movies perfectly tailored to your taste.</p>
+        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg mt-3">Get Started</a>
+    </div>
+</div>
+{% endblock %}

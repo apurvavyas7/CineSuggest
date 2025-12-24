@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}{{ movie.title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <img src="{{ url_for('static', filename='uploads/posters/' + movie.poster_path) }}" class="img-fluid rounded" alt="{{ movie.title }} Poster">
+    </div>
+
+    <div class="col-md-8">
+        <h1 class="display-4">{{ movie.title }}</h1>
+        <p class="lead text-body-secondary">{{ movie.overview }}</p>
+        <div class="d-flex align-items-center mb-3">
+            <span class="badge bg-warning text-dark fs-5 me-3">⭐ {{ "%.1f"|format(movie.rating) }}</span>
+            <div>
+                {% for genre in movie.genres %}
+                    <span class="badge bg-secondary me-1">{{ genre.name }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="my-3">
+            <form action="{{ url_for('toggle_watchlist', movie_id=movie.id) }}" method="POST">
+                {% if movie in current_user.watchlist %}
+                    <button type="submit" class="btn btn-secondary">Remove from Watchlist</button>
+                {% else %}
+                    <button type="submit" class="btn btn-info">Add to Watchlist</button>
+                {% endif %}
+            </form>
+        </div>
+
+        <hr class="my-4">
+
+        <h4>Reviews</h4>
+        
+        {% if not user_review %}
+            <div class="card bg-dark-subtle border-secondary mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Write a Review</h5>
+                    <form action="{{ url_for('movie_detail', movie_id=movie.id) }}" method="POST">
+                        <div class="mb-3">
+                            <label for="rating" class="form-label">Your Rating</label>
+                            <div class="rating">
+                                <input type="radio" id="star5" name="rating" value="5" /><label for="star5">★</label>
+                                <input type="radio" id="star4" name="rating" value="4" /><label for="star4">★</label>
+                                <input type="radio" id="star3" name="rating" value="3" /><label for="star3">★</label>
+                                <input type="radio" id="star2" name="rating" value="2" /><label for="star2">★</label>
+                                <input type="radio" id="star1" name="rating" value="1" /><label for="star1">★</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="review_text" class="form-label">Your Review (Optional)</label>
+                            <textarea class="form-control" id="review_text" name="review_text" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+        
+        {% for review in reviews %}
+            <div class="card bg-dark-subtle border-secondary mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                         <h6 class="card-title mb-0"><a href="{{ url_for('profile', username=review.author.username) }}" class="text-decoration-none text-light">{{ review.author.username }}</a></h6>
+                         {% if review == user_review %}
+                            <a href="{{ url_for('edit_review', review_id=review.id) }}" class="btn btn-sm btn-outline-secondary">Edit Review</a>
+                         {% endif %}
+                    </div>
+                    <p class="mb-1 mt-2">
+                        {% for i in range(review.rating) %}⭐{% endfor %}
+                    </p>
+                    <p class="card-text">{{ review.text }}</p>
+                    <small class="text-body-secondary">Reviewed on {{ review.timestamp.strftime('%B %d, %Y') }}</small>
+                </div>
+            </div>
+        {% else %}
+            <p>No reviews yet. Be the first to write one!</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

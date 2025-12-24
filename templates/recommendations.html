@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Your Recommendations{% endblock %}
+{% block content %}
+<h2 class="display-5 text-center mb-4">Your Personalized Recommendations</h2>
+{% if recommendations %}
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    {% for movie, score in recommendations %}
+    <div class="col">
+        <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="text-decoration-none">
+            <div class="card h-100 bg-dark-subtle border-secondary">
+                <img src="{{ url_for('static', filename='uploads/posters/' + movie.poster_path) }}" class="card-img-top" alt="{{ movie.title }} Poster">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-light">{{ movie.title }}</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-warning text-dark">⭐ {{ "%.1f"|format(movie.rating) }}</span>
+                        <span class="badge bg-primary">Match: {{ score }}</span>
+                    </div>
+                    <p class="card-text text-body-secondary small mt-auto">{{ movie.overview | truncate(100) }}</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center text-body-secondary mt-5">
+    <p class="fs-5">We couldn't find any recommendations for you.</p>
+    <p>Try updating your survey with more preferences!</p>
+    <a href="{{ url_for('survey') }}" class="btn btn-primary mt-3">Update Preferences</a>
+</div>
+{% endif %}
+{% endblock %}

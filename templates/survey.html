@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Preference Survey{% endblock %}
+{% block content %}
+<div class="text-center">
+    <h2 class="display-5">Tell Us What You Like</h2>
+    <p class="lead text-body-secondary">This helps us find movies you'll love.</p>
+</div>
+<form action="{{ url_for('survey') }}" method="POST" class="mt-5">
+    <div class="mb-5">
+        <h3 class="mb-3">1. Select your preferred languages</h3>
+        <div class="d-flex flex-wrap gap-2">
+            {% for lang in all_languages %}<input type="checkbox" class="btn-check" name="languages" value="{{ lang.id }}" id="lang-{{ lang.id }}" {% if lang in current_user.preferred_languages %}checked{% endif %}><label class="btn btn-outline-info" for="lang-{{ lang.id }}">{{ lang.name }}</label>{% endfor %}
+        </div>
+    </div>
+    <div class="mb-5">
+        <h3 class="mb-3">2. Select your favorite genres</h3>
+        <div class="d-flex flex-wrap gap-2">
+            {% for genre in all_genres %}<input type="checkbox" class="btn-check" name="genres" value="{{ genre.id }}" id="genre-{{ genre.id }}" {% if genre in current_user.preferred_genres %}checked{% endif %}><label class="btn btn-outline-primary" for="genre-{{ genre.id }}">{{ genre.name }}</label>{% endfor %}
+        </div>
+    </div>
+    <div class="mb-5">
+        <h3 class="mb-3">3. Pick a few movies you've enjoyed</h3>
+        <div class="row row-cols-3 row-cols-md-4 row-cols-lg-5 g-3">
+            {% for movie in popular_movies %}
+            <div class="col movie-selector">
+                <input type="checkbox" name="liked_movies" value="{{ movie.id }}" id="movie-{{ movie.id }}" class="d-none" {% if movie in current_user.liked_movies %}checked{% endif %}>
+                <label for="movie-{{ movie.id }}" class="cursor-pointer">
+                    <img src="{{ url_for('static', filename='uploads/posters/' + movie.poster_path) }}" alt="{{ movie.title }}" class="img-fluid rounded">
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="d-grid"><button type="submit" class="btn btn-primary btn-lg">Save & Get Recommendations</button></div>
+</form>
+{% endblock %}

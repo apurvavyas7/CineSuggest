@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Select Genre{% endblock %}
+{% block content %}
+<div class="mb-5">
+    <a href="{{ url_for('dashboard') }}" class="text-decoration-none">&larr; Back to Languages</a>
+    <h2 class="display-6 text-center mt-2">Select a Genre in {{ language.name }}</h2>
+</div>
+<div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+    {% set genre_emojis = {'Action': '💥', 'Comedy': '😂', 'Sci-Fi': '🚀', 'Drama': '🎭', 'Crime': '🚓'} %}
+    {% for genre in genres %}
+    <div class="col">
+        <a href="{{ url_for('movies_by_genre_and_lang', language_name=language.name, genre_id=genre.id) }}" class="text-decoration-none">
+            <div class="card bg-dark-subtle h-100 text-center border-secondary">
+                <div class="card-body d-flex flex-column justify-content-center">
+                    <div class="display-4">{{ genre_emojis.get(genre.name, '🎬') }}</div>
+                    <h5 class="card-title mt-2">{{ genre.name }}</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% else %}
+    <p class="text-center col-12 text-body-secondary">No genres found for this language.</p>
+    {% endfor %}
+</div>
+{% endblock %}

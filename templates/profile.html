@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}{{ user.username }}'s Profile{% endblock %}
+
+{% block content %}
+<div class="row align-items-center border-bottom pb-4 mb-4">
+    <div class="col-md-3 text-center">
+        <img src="{{ url_for('static', filename='uploads/avatars/' + user.avatar_path) }}" alt="{{ user.username }}'s Avatar" class="rounded-circle img-fluid" style="width: 180px; height: 180px; object-fit: cover;">
+    </div>
+    <div class="col-md-9">
+        <div class="d-flex align-items-center mb-2">
+            <h1 class="display-4 me-3">{{ user.username }}</h1>
+            {% if user == current_user %}
+            <a href="{{ url_for('edit_profile') }}" class="btn btn-outline-secondary">Edit Profile</a>
+            {% endif %}
+        </div>
+        <div class="d-flex text-body-secondary mb-3">
+            <div class="me-4"><strong>{{ user.reviews.count() }}</strong> Reviews</div>
+            <div class="me-4"><strong>{{ user.liked_movies|length }}</strong> Liked Movies</div>
+            <div><strong>{{ user.watchlist|length }}</strong> in Watchlist</div>
+        </div>
+        <p class="lead">{{ user.bio or 'No bio provided.' }}</p>
+    </div>
+</div>
+
+<ul class="nav nav-tabs" id="profileTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews-tab-pane" type="button" role="tab">Reviews</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="liked-tab" data-bs-toggle="tab" data-bs-target="#liked-tab-pane" type="button" role="tab">Liked Movies</button>
+    </li>
+</ul>
+
+<div class="tab-content mt-4" id="profileTabsContent">
+    <div class="tab-pane fade show active" id="reviews-tab-pane" role="tabpanel">
+        {% if reviews %}
+            {% for review in reviews %}
+            <div class="card bg-dark-subtle border-secondary mb-3">
+                <div class="row g-0">
+                    <div class="col-md-2">
+                        <a href="{{ url_for('movie_detail', movie_id=review.movie.id) }}">
+                             <img src="{{ url_for('static', filename='uploads/posters/' + review.movie.poster_path) }}" class="img-fluid rounded-start h-100" style="object-fit: cover;" alt="{{ review.movie.title }} Poster">
+                        </a>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{{ url_for('movie_detail', movie_id=review.movie.id) }}" class="text-decoration-none text-light">{{ review.movie.title }}</a></h5>
+                            <p class="mb-1">{% for i in range(review.rating) %}⭐{% endfor %}</p>
+                            <p class="card-text fst-italic">"{{ review.text }}"</p>
+                            <small class="text-body-secondary">Reviewed on {{ review.timestamp.strftime('%B %d, %Y') }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+        <p class="text-body-secondary">{{ user.username }} hasn't reviewed any movies yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="tab-pane fade" id="liked-tab-pane" role="tabpanel">
+        {% if user.liked_movies %}
+        <div class="row row-cols-3 row-cols-md-4 row-cols-lg-5 g-3">
+            {% for movie in user.liked_movies %}
+            <div class="col">
+                <a href="{{ url_for('movie_detail', movie_id=movie.id) }}">
+                    <img src="{{ url_for('static', filename='uploads/posters/' + movie.poster_path) }}" class="img-fluid rounded" alt="{{ movie.title }}">
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-body-secondary">{{ user.username }} hasn't liked any movies yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
